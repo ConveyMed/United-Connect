@@ -14,11 +14,11 @@ CREATE TABLE IF NOT EXISTS users (
   phone TEXT,
   bio TEXT,
   title TEXT,
-  member_type TEXT, -- United Connect: 'United Team' | 'Independent Agents' | 'Independent Reps' (required at onboarding; only 'United Team' shows in Directory)
   profile_image_url TEXT,
   profile_complete BOOLEAN DEFAULT false,
   is_admin BOOLEAN DEFAULT false,
   is_owner BOOLEAN DEFAULT false,
+  ai_consent_acknowledged BOOLEAN DEFAULT false, -- AI chat consent gate (AIChatContext reads/writes this)
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
 );

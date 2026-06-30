@@ -4,7 +4,7 @@ import { Capacitor } from '@capacitor/core';
 // IMPORTANT: Replace this fallback with the client's OneSignal App ID
 // Also update .env AND Netlify env vars (REACT_APP_ONESIGNAL_APP_ID + REACT_APP_ONESIGNAL_REST_API_KEY)
 // See ~/Apps/onesignal.md for full setup checklist
-const ONESIGNAL_APP_ID = process.env.REACT_APP_ONESIGNAL_APP_ID || 'REPLACE_WITH_CLIENT_APP_ID';
+const ONESIGNAL_APP_ID = process.env.REACT_APP_ONESIGNAL_APP_ID || '48530f90-338b-4647-a4e6-2632a3a12410';
 
 let isSDKInitialized = false;
 let currentUserId = null;

@@ -61,15 +61,23 @@ CREATE POLICY "Service role can read all preferences"
   USING (true);
 
 -- Function to auto-create preferences on user signup
+-- SECURITY DEFINER + SET search_path + schema-qualified table are ALL required:
+-- this trigger fires in the auth admin's context (search_path has no `public`), so an
+-- unqualified table name throws "relation user_notification_preferences does not exist"
+-- and aborts the whole signup ("Database error saving new user"). Fixed 2026-06-30.
 CREATE OR REPLACE FUNCTION create_notification_preferences()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public'
+AS $$
 BEGIN
-  INSERT INTO user_notification_preferences (user_id)
+  INSERT INTO public.user_notification_preferences (user_id)
   VALUES (NEW.id)
   ON CONFLICT (user_id) DO NOTHING;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
 -- Trigger to auto-create preferences when user is created
 DROP TRIGGER IF EXISTS on_auth_user_created_notification_prefs ON auth.users;

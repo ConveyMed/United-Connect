@@ -38,6 +38,15 @@ magick "$SRC" -resize 48x48 public/favicon-48.png
 magick "$SRC" -resize 32x32 public/favicon-32.png
 magick "$SRC" -resize 16x16 public/favicon-16.png
 
+# Multi-size favicon.ico (browser tab) — flattened, no alpha. (Generators that only
+# write favicon-*.png leave the OLD favicon.ico in the browser tab — generate it here.)
+magick "$SRC" -background "$BG_COLOR" -alpha remove -define icon:auto-resize=64,48,32,16 public/favicon.ico
+
+# Open Graph / social-share preview (1200x630) — what shows when the link is shared.
+# Default = app icon centered on bg color. For a polished look, replace with the client's
+# HORIZONTAL logo centered on white (see duplication checklist).
+magick -size 1200x630 "xc:${BG_COLOR}" \( "$SRC" -resize 460x460 \) -gravity center -composite public/og-image.png
+
 mkdir -p public/icons
 magick "$SRC" -resize 72x72 public/icons/icon-72.png
 magick "$SRC" -resize 96x96 public/icons/icon-96.png
@@ -146,7 +155,33 @@ magick "$SRC" -resize 20x20 ios-icons/icon-20.png
 # Copy into actual iOS build if it exists
 if [ -d "ios/App/App/Assets.xcassets/AppIcon.appiconset" ]; then
   echo "  Copying to iOS build..."
-  cp ios-icons/AppIcon.appiconset/*.png ios/App/App/Assets.xcassets/AppIcon.appiconset/
+  ICONSET="ios/App/App/Assets.xcassets/AppIcon.appiconset"
+  cp ios-icons/AppIcon.appiconset/*.png "$ICONSET/"
+  # CRITICAL: Capacitor iOS uses a SINGLE icon file referenced in Contents.json
+  # (typically AppIcon-512@2x.png). The icon-*.png above are NOT read by the build,
+  # so we MUST overwrite the file Contents.json actually points at, or the OLD icon
+  # ships (the FieldOrtho/UnitedConnect "stale icon" bug). Read the real filename and
+  # overwrite it with the 1024 icon, flattened (no alpha = App Store safe).
+  REF=$(grep -o '"filename"[^,]*' "$ICONSET/Contents.json" 2>/dev/null | head -1 | sed -E 's/.*: *"([^"]+)".*/\1/')
+  if [ -n "$REF" ]; then
+    magick ios-icons/icon-1024.png -background white -alpha remove -alpha off "$ICONSET/$REF"
+    echo "    iOS app icon set on the file Contents.json uses: $REF (alpha flattened)"
+  else
+    echo "    WARNING: could not read AppIcon Contents.json filename — verify the iOS icon manually."
+  fi
+fi
+
+# --- iOS splash (matches the Android splash: logo centered on bg color) ---
+# generate-icons did NOT used to touch iOS splash, so dupes shipped the OLD template
+# launch screen. Regenerate the Splash.imageset files here.
+SPLASH_SET="ios/App/App/Assets.xcassets/Splash.imageset"
+if [ -d "$SPLASH_SET" ]; then
+  echo "  iOS splash screens..."
+  magick -size 2732x2732 "xc:${BG_COLOR}" \( "$SRC" -resize 1500x1500 \) -gravity center -composite "$SPLASH_SET/_tmp_splash.png"
+  for f in splash-2732x2732.png splash-2732x2732-1.png splash-2732x2732-2.png; do
+    [ -f "$SPLASH_SET/$f" ] && cp "$SPLASH_SET/_tmp_splash.png" "$SPLASH_SET/$f"
+  done
+  rm -f "$SPLASH_SET/_tmp_splash.png"
 fi
 
 # --- Store listing ---

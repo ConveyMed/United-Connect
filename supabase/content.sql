@@ -36,6 +36,10 @@ CREATE TABLE IF NOT EXISTS content_items (
   quiz_link_label VARCHAR(255),
   is_downloadable BOOLEAN DEFAULT true,
   use_company_logo BOOLEAN DEFAULT false,
+  -- Bunny.net video fields. The app's "save content" ALWAYS sends these, so if they're
+  -- missing the insert is rejected ("Failed to save content"). Keep them on the table.
+  bunny_video_id VARCHAR(255),
+  bunny_video_status VARCHAR(50) DEFAULT NULL,
   sort_order INTEGER DEFAULT 0,
   is_active BOOLEAN DEFAULT true,
   created_by UUID,
