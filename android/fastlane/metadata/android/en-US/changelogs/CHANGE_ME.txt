@@ -1,0 +1,1 @@
+CHANGE_ME — Rename this file to match the versionCode you're releasing (e.g. 2.txt for versionCode 2). Contents become the "What's new" note on the Play Store listing. Keep it short; bullet style is fine.

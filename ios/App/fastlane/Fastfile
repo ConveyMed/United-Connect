@@ -1,0 +1,84 @@
+# Generic iOS fastlane config for Capacitor apps.
+# Run from ios/App/ directory:
+#   fastlane status     — show latest TestFlight build number
+#   fastlane build      — web + cap sync + archive + export IPA
+#   fastlane upload     — upload current IPA to TestFlight (waits for processing)
+#   fastlane submit     — attach build to App Store version + submit for review
+#   fastlane release    — full pipeline: build + upload + submit
+#
+# Credentials come from env vars (NEVER hardcode keys in this file):
+#   ASC_KEY_ID       App Store Connect API Key ID
+#   ASC_ISSUER_ID    App Store Connect Issuer ID
+#   ASC_KEY_PATH     Absolute path to AuthKey_*.p8
+
+default_platform(:ios)
+
+def asc_key
+  app_store_connect_api_key(
+    key_id:       ENV.fetch("ASC_KEY_ID"),
+    issuer_id:    ENV.fetch("ASC_ISSUER_ID"),
+    key_filepath: File.expand_path(ENV.fetch("ASC_KEY_PATH")),
+    in_house:     false
+  )
+end
+
+platform :ios do
+  desc "Show latest TestFlight build number"
+  lane :status do
+    latest = latest_testflight_build_number(api_key: asc_key)
+    UI.success("Latest TestFlight build number: #{latest}")
+  end
+
+  desc "Web build + Capacitor sync + Xcode archive + export signed IPA"
+  lane :build do
+    Dir.chdir("../..") do
+      sh("npm", "run", "build")
+      sh("npx", "cap", "sync", "ios")
+    end
+    sh("rm", "-rf", "build")
+    build_app(
+      workspace:        "App.xcworkspace",
+      scheme:           "App",
+      configuration:    "Release",
+      export_method:    "app-store",
+      output_directory: "build",
+      clean:            true
+    )
+  end
+
+  desc "Upload the latest IPA to App Store Connect / TestFlight"
+  lane :upload do
+    upload_to_testflight(
+      api_key:                           asc_key,
+      skip_submission:                   true,
+      skip_waiting_for_build_processing: false
+    )
+  end
+
+  desc "Submit current processed build for App Store review. Pass version: if auto-detect fails."
+  lane :submit do |options|
+    version = options[:version] || sh("/usr/libexec/PlistBuddy", "-c", "Print CFBundleShortVersionString", "../App/Info.plist").strip rescue nil
+    deliver(
+      api_key:            asc_key,
+      app_version:        version,
+      submit_for_review:  true,
+      automatic_release:  true,
+      force:              true,
+      skip_screenshots:   true,
+      skip_metadata:      false,
+      precheck_include_in_app_purchases: false,
+      submission_information: {
+        add_id_info_uses_idfa:                false,
+        export_compliance_uses_encryption:    false,
+        export_compliance_encryption_updated: false
+      }
+    )
+  end
+
+  desc "Full release: build -> upload -> wait for processing -> submit"
+  lane :release do
+    build
+    upload
+    submit
+  end
+end

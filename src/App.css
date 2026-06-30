@@ -1,0 +1,169 @@
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Lock viewport - no body scroll */
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--off-white, #f8fafc);
+  color: var(--text-dark, #1e293b);
+}
+
+/* Safe area CSS variables - defaults for web */
+/* ALL COLORS ARE IN theme.js - DO NOT ADD COLORS HERE */
+:root {
+  --safe-area-top: 0px;
+  --safe-area-bottom: 0px;
+  --safe-area-left: 0px;
+  --safe-area-right: 0px;
+}
+
+/* App Shell - fixed, handles safe areas */
+.app-shell {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+  background-color: var(--background-off-white);
+}
+
+/* Scrollable content area */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Spinner Animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Slide Up Animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Swiper Carousel Customization - 2026 Minimal */
+.swiper {
+  --swiper-theme-color: #ffffff;
+  --swiper-navigation-size: 0px;
+}
+
+/* Hide default arrow content */
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  display: none !important;
+}
+
+/* Custom arrow buttons - small, rounded, white with black outline */
+.swiper-button-prev,
+.swiper-button-next {
+  width: 32px !important;
+  height: 32px !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border: 2px solid rgba(0, 0, 0, 0.7) !important;
+  border-radius: 50% !important;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.swiper:hover .swiper-button-prev,
+.swiper:hover .swiper-button-next {
+  opacity: 1;
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  transform: scale(1.1);
+  background-color: #ffffff !important;
+}
+
+.swiper-button-prev {
+  left: 10px !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 18L9 12L15 6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 14px !important;
+}
+
+.swiper-button-next {
+  right: 10px !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18L15 12L9 6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 14px !important;
+}
+
+.swiper-button-disabled {
+  display: none !important;
+}
+
+/* Minimal pill pagination */
+.swiper-pagination {
+  bottom: 16px !important;
+}
+
+.swiper-pagination-bullet {
+  width: 6px !important;
+  height: 6px !important;
+  background: rgba(255, 255, 255, 0.4) !important;
+  opacity: 1 !important;
+  transition: all 0.3s ease !important;
+  border-radius: 3px !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #ffffff !important;
+  width: 18px !important;
+  border-radius: 3px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}

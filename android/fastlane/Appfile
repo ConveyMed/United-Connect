@@ -1,0 +1,4 @@
+# Points at shared Play Console service account (works for all apps on the Play account
+# once the service account has been granted app permissions in Play Console → Users and permissions).
+json_key_file(File.expand_path("~/Apps/p8-keys/play-store-service-account.json"))
+package_name("CHANGE_ME_PACKAGE_NAME")   # e.g. "com.fieldortho.app" — must match android/app/build.gradle applicationId

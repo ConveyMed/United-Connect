@@ -1,0 +1,42 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+/.auth/
+/playwright-report/
+/test-results/
+
+# production
+/build
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# APNs keys
+keys/
+
+# Template docs (contain API keys, triggers Netlify secret scanner)
+DUPLICATION_GUIDE.md
+Demo_TODO.md
+NOTIFICATIONS_SETUP.md
+
+# Per-app deviation map + internal recon docs (local-only, never commit)
+WHATS_DIFFERENT.md
+BUILD_SPEC.md
+transcript.md
+assets-from-mike/
+.netlify

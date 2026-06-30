@@ -1,0 +1,59 @@
+# Generic Android fastlane config for Capacitor apps.
+# Run from android/ directory:
+#   fastlane status     — validate Play Console API access
+#   fastlane build      — web + cap sync + signed AAB (gradle bundleRelease)
+#   fastlane upload     — upload existing AAB to Play Console production track
+#   fastlane release    — full pipeline: build + upload
+#
+# Credentials: Appfile points at ~/Apps/p8-keys/play-store-service-account.json
+# Per-app setup: set package_name in Appfile to match android/app/build.gradle applicationId.
+#
+# Before every release: bump versionCode + versionName in android/app/build.gradle,
+# and drop a changelog at fastlane/metadata/android/en-US/changelogs/<versionCode>.txt.
+
+default_platform(:android)
+
+AAB_PATH       = "app/build/outputs/bundle/release/app-release.aab"
+TRACK          = "production"    # internal, alpha, beta, production
+RELEASE_STATUS = "completed"     # completed, draft, inProgress, halted
+
+platform :android do
+  desc "Validate Play Console API access (prints current production release names)"
+  lane :status do
+    names = google_play_track_release_names(track: TRACK)
+    UI.success("Play Console reachable. Current #{TRACK} release name(s): #{names.inspect}")
+  end
+
+  desc "Web build + Capacitor sync + signed Android AAB"
+  lane :build do
+    Dir.chdir("../..") do
+      sh("npm", "run", "build")
+      sh("npx", "cap", "sync", "android")
+    end
+    gradle(
+      task:        "clean bundle",
+      build_type:  "Release",
+      project_dir: "."
+    )
+  end
+
+  desc "Upload current AAB to Play Console"
+  lane :upload do
+    upload_to_play_store(
+      aab:                     AAB_PATH,
+      track:                   TRACK,
+      release_status:          RELEASE_STATUS,
+      skip_upload_apk:         true,
+      skip_upload_metadata:    true,
+      skip_upload_changelogs:  false,
+      skip_upload_images:      true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Full release: build + upload"
+  lane :release do
+    build
+    upload
+  end
+end
