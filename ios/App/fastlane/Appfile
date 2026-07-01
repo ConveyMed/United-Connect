@@ -1,3 +1,2 @@
-# Per-app config. Fill in before first release.
-app_identifier("CHANGE_ME_BUNDLE_ID")   # e.g. "com.medulochub.app"
-team_id("CHANGE_ME_TEAM_ID")            # Apple Developer Team ID — check ios/App/App.xcodeproj/project.pbxproj DEVELOPMENT_TEAM
+app_identifier("com.unitedconnect.app")
+team_id("9B895DPQKP")

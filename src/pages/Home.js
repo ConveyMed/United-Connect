@@ -504,7 +504,8 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
         </div>
       )}
 
-      {/* Engagement Stats */}
+      {/* Engagement Stats (hidden on one-way / admin-broadcast feeds) */}
+      {showPostInteractions && (
       <div style={styles.engagementStats}>
         <span style={styles.stat}>
           <span style={styles.likeIcon}>
@@ -514,6 +515,7 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
         </span>
         <span style={styles.stat}>{totalComments} comments</span>
       </div>
+      )}
 
       {/* Action Buttons (hidden on one-way / admin-broadcast feeds) */}
       {showPostInteractions && (
@@ -549,7 +551,7 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
       )}
 
       {/* Comment Preview (when collapsed) */}
-      {!showComments && previewComment && (
+      {showPostInteractions && !showComments && previewComment && (
         <div
           style={styles.commentPreview}
           onClick={() => setShowComments(true)}
@@ -567,7 +569,7 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
       )}
 
       {/* Expanded Comments Section */}
-      {showComments && (
+      {showPostInteractions && showComments && (
         <div style={styles.commentsSection}>
           {/* Comments list */}
           {displayedComments.length > 0 ? (
