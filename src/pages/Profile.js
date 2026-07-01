@@ -411,7 +411,7 @@ const Profile = () => {
               </div>
               <ChevronRightIcon />
             </button>
-            <button style={styles.menuItem} onClick={() => window.open('https://www.cognitoforms.com/ConveyProInc/ReportABug', '_blank')}>
+            <button style={styles.menuItem} onClick={() => window.open('https://forms.monday.com/forms/8ca3d8d4267c571e4b687f37ad901b20?r=use1', '_blank')}>
               <div style={styles.menuItemWithIcon}>
                 <BugIcon />
                 <span style={styles.menuText}>Report a Bug</span>
