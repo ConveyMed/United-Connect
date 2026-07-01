@@ -295,13 +295,15 @@ const Profile = () => {
                   </div>
                   <ChevronRightIcon />
                 </button>
-                <button style={styles.menuItem} onClick={() => navigate('/manage-chat')}>
-                  <div style={styles.menuItemWithIcon}>
-                    <ChatIcon />
-                    <span style={styles.menuText}>Manage Chat</span>
-                  </div>
-                  <ChevronRightIcon />
-                </button>
+                {showChat && (
+                  <button style={styles.menuItem} onClick={() => navigate('/manage-chat')}>
+                    <div style={styles.menuItemWithIcon}>
+                      <ChatIcon />
+                      <span style={styles.menuText}>Manage Chat</span>
+                    </div>
+                    <ChevronRightIcon />
+                  </button>
+                )}
                 <button style={styles.menuItem} onClick={() => navigate('/manage-analytics')}>
                   <div style={styles.menuItemWithIcon}>
                     <AnalyticsIcon />

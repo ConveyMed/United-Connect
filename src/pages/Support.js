@@ -5,7 +5,7 @@ import { supabase } from '../config/supabase';
 // CLIENT SETUP REQUIRED
 // =============================================================
 const APP_NAME = 'United Connect';
-const BUG_REPORT_URL = 'mailto:mike@conveymed.io';
+const BUG_REPORT_URL = 'https://forms.monday.com/forms/8ca3d8d4267c571e4b687f37ad901b20?r=use1';
 
 const Support = () => {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });

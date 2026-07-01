@@ -146,7 +146,10 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
     getNewCommentsStartIndex,
   } = useActivityNotifications();
 
-  const { canDeleteComments } = useAppSettings();
+  const { canDeleteComments, settings } = useAppSettings();
+  // One-way feed (admin-broadcast apps like United Connect): hide like/comment/save.
+  // Defaults ON so normal apps are unaffected; set app_settings.show_post_interactions='false' to hide.
+  const showPostInteractions = settings?.show_post_interactions !== false && settings?.show_post_interactions !== 'false';
 
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState('');
@@ -512,7 +515,8 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
         <span style={styles.stat}>{totalComments} comments</span>
       </div>
 
-      {/* Action Buttons */}
+      {/* Action Buttons (hidden on one-way / admin-broadcast feeds) */}
+      {showPostInteractions && (
       <div style={styles.actionButtons}>
         <button
           style={{
@@ -542,6 +546,7 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
           <span>{isBookmarked ? 'Saved' : 'Save'}</span>
         </button>
       </div>
+      )}
 
       {/* Comment Preview (when collapsed) */}
       {!showComments && previewComment && (

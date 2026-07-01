@@ -175,10 +175,9 @@ const ManageUsers = () => {
 
     setDeleting(true);
     try {
-      const { error } = await supabase
-        .from('users')
-        .delete()
-        .eq('id', selectedUser.id);
+      // Use the admin RPC: removes the profile AND the auth login. A direct table
+      // delete is blocked by RLS and would leave the login (and re-create the profile).
+      const { error } = await supabase.rpc('admin_delete_user', { target_id: selectedUser.id });
 
       if (error) throw error;
 

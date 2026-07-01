@@ -384,7 +384,11 @@ const ContentItemModal = ({ isOpen, onClose, onSave, item, title, type, categori
       setSelectedCategories(itemCategoryIds.length > 0 ? [...itemCategoryIds] : []);
       setCategoryError('');
     }
-  }, [isOpen, item, itemCategoryIds]);
+    // Key ONLY on open + the item's id. Depending on `item`/`itemCategoryIds` (fresh
+    // references every parent render) re-fired this effect on unrelated re-renders and
+    // wiped what the user was typing/pasting. See Mike's "form clears on paste" report.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, item?.id]);
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
