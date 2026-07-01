@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../config/supabase';
 import '../onboarding/onboarding.css';
@@ -12,6 +12,31 @@ function ResetPassword() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // Establish the recovery session from the reset link on mount. The email opens in whatever
+  // browser the user taps it from (often a fresh Safari that never requested the reset), so we
+  // cannot rely on the client auto-detecting it. Handle both token shapes: PKCE (?code=) and
+  // implicit (#access_token). If a session already exists, nothing to do.
+  useEffect(() => {
+    const establish = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) return;
+
+      const code = new URLSearchParams(window.location.search).get('code');
+      if (code) {
+        await supabase.auth.exchangeCodeForSession(code).catch(() => {});
+        return;
+      }
+
+      const hp = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      const access_token = hp.get('access_token');
+      const refresh_token = hp.get('refresh_token');
+      if (access_token && refresh_token) {
+        await supabase.auth.setSession({ access_token, refresh_token }).catch(() => {});
+      }
+    };
+    establish();
+  }, []);
 
   // Password requirements
   const requirements = [
@@ -39,6 +64,12 @@ function ResetPassword() {
     setError('');
 
     try {
+      // Make sure the recovery session is actually established before changing the password.
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('This reset link is invalid or has expired. Please request a new one.');
+      }
+
       const { error: updateError } = await supabase.auth.updateUser({
         password: password
       });

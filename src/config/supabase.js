@@ -11,4 +11,15 @@ import { createClient } from '@supabase/supabase-js';
 export const supabaseUrl = 'https://wyeopzxtpywmauttizuy.supabase.co';
 export const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5ZW9wenh0cHl3bWF1dHRpenV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3ODAwODIsImV4cCI6MjA5ODM1NjA4Mn0.KwVM-3oKGoTcIhw7UW-8oz25O3GFeINkqE6uLvPohns';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Implicit flow: password-reset / email links carry tokens in the URL hash, which work in
+// ANY browser the email is opened from. (PKCE needs a code_verifier from the original
+// browser, which breaks cross-device reset — "Auth session missing".) The app's App.js +
+// ResetPassword read these hash tokens directly.
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    flowType: 'implicit',
+    detectSessionInUrl: true,
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+});

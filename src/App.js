@@ -236,11 +236,20 @@ function AppContent() {
       window.history.replaceState(null, '', window.location.pathname);
       navigate('/email-confirmed', { replace: true });
     }
-    // Check for password recovery token and redirect to reset-password page
-    if (hash && hash.includes('type=recovery') && location.pathname !== '/reset-password') {
-      // Clear the hash and redirect to reset-password
-      window.history.replaceState(null, '', window.location.pathname);
-      navigate('/reset-password', { replace: true });
+    // Password recovery: capture the session from the hash tokens BEFORE clearing the URL,
+    // then send the user to the reset screen. (Previously it cleared the hash without
+    // setting the session, so ResetPassword had no session -> "Auth session missing".)
+    if (hash && hash.includes('type=recovery')) {
+      const hp = new URLSearchParams(hash.replace(/^#/, ''));
+      const at = hp.get('access_token');
+      const rt = hp.get('refresh_token');
+      if (at && rt) {
+        supabase.auth.setSession({ access_token: at, refresh_token: rt });
+      }
+      window.history.replaceState(null, '', '/reset-password');
+      if (location.pathname !== '/reset-password') {
+        navigate('/reset-password', { replace: true });
+      }
     }
     // Check for email change confirmation
     if (hash && hash.includes('type=email_change')) {
