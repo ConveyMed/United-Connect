@@ -4,6 +4,7 @@ import { useChat } from '../context/ChatContext';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../config/supabase';
 import { openInAppBrowser } from '../utils/browser';
+import { useHaptic } from '../hooks/useHaptic';
 
 // Icons
 const BackIcon = () => (
@@ -77,6 +78,7 @@ const ChatConversation = () => {
   const { chatId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const haptic = useHaptic();
   const {
     chats,
     messages,
@@ -139,6 +141,8 @@ const ChatConversation = () => {
 
   const handleSend = async () => {
     if (!inputValue.trim() && !uploading) return;
+
+    haptic.light();
 
     if (editingMessage) {
       await editMessage(editingMessage.id, inputValue.trim());
@@ -617,6 +621,7 @@ const ChatConversation = () => {
           />
 
           <button
+            className="press-scale"
             style={{
               ...styles.sendButton,
               opacity: inputValue.trim() ? 1 : 0.5

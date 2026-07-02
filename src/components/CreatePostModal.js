@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { usePosts } from '../context/PostsContext';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../config/supabase';
+import { useHaptic } from '../hooks/useHaptic';
 
 const CloseIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -94,6 +95,7 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB (Supabase free tier limit)
 const CreatePostModal = () => {
   const { createModalOpen, closeCreateModal, addPost } = usePosts();
   const { userProfile, user } = useAuth();
+  const haptic = useHaptic();
   const [content, setContent] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -196,6 +198,7 @@ const CreatePostModal = () => {
         return;
       }
     }
+    haptic.light();
     setContent('');
     clearAllMedia();
     closeCreateModal();
@@ -278,11 +281,13 @@ const CreatePostModal = () => {
         ? new Date(scheduledAt).toISOString()
         : null;
       await addPost(content.trim(), uploadedMedia, links, { notifyPush, scheduledAt: scheduleTime });
+      haptic.success();
       setContent('');
       clearAllMedia();
       closeCreateModal();
     } catch (error) {
       console.error('Post error:', error);
+      haptic.error();
       alert('Failed to create post. Please try again.');
     } finally {
       setUploadState(null);
@@ -322,11 +327,12 @@ const CreatePostModal = () => {
 
         {/* Header */}
         <div style={styles.header}>
-          <button style={styles.closeButton} onClick={handleClose} disabled={isUploading}>
+          <button className="press-scale" style={styles.closeButton} onClick={handleClose} disabled={isUploading}>
             <CloseIcon />
           </button>
           <h2 style={styles.title}>Create Post</h2>
           <button
+            className="press-scale"
             style={{
               ...styles.postButton,
               opacity: (content.trim() || mediaFiles.length > 0 || links.length > 0) ? 1 : 0.5,
@@ -496,7 +502,7 @@ const CreatePostModal = () => {
           <div style={styles.notifyOptions}>
             <button
               style={styles.notifyOption}
-              onClick={() => setNotifyPush(!notifyPush)}
+              onClick={() => { haptic.selection(); setNotifyPush(!notifyPush); }}
               disabled={isUploading}
             >
               <CheckCircle checked={notifyPush} />

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useAIChat } from '../context/AIChatContext';
 import { openInAppBrowser } from '../utils/browser';
+import { useHaptic } from '../hooks/useHaptic';
 
 // Icons
 const ChevronDownIcon = () => (
@@ -103,6 +104,7 @@ const AIChatPanel = () => {
 
   const [question, setQuestion] = useState('');
   const [copied, setCopied] = useState(false);
+  const haptic = useHaptic();
   const textareaRef = useRef(null);
   const contentRef = useRef(null);
 
@@ -171,6 +173,7 @@ const AIChatPanel = () => {
 
   const handleSubmit = () => {
     if (!question.trim() || !selectedProduct || isLoading) return;
+    haptic.light();
     askQuestion(question);
     setQuestion('');
   };
@@ -438,6 +441,7 @@ const AIChatPanel = () => {
                       disabled={!selectedProduct}
                     />
                     <button
+                      className="press-scale"
                       style={{
                         ...styles.sendButton,
                         opacity: question.trim() && selectedProduct ? 1 : 0.3,

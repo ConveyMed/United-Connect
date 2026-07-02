@@ -17,34 +17,8 @@ import {
   checkAndRequestPermission
 } from './services/onesignal';
 import { supabase } from './config/supabase';
-import Login from './onboarding/Login';
-import SignUp from './onboarding/SignUp';
-import EmailConfirmation from './onboarding/EmailConfirmation';
-import EmailConfirmed from './pages/EmailConfirmed';
-import ForgotPassword from './onboarding/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import ProfileComplete from './onboarding/ProfileComplete';
-import Home from './pages/Home';
-import Profile from './pages/Profile';
-import NotificationSettings from './pages/NotificationSettings';
-import EditProfile from './pages/EditProfile';
-import ManageUsers from './pages/ManageUsers';
-import Directory from './pages/Directory';
-import DirectoryPermissions from './pages/DirectoryPermissions';
-import Resources from './pages/Resources';
-import ManageForms from './pages/ManageForms';
-import ManageLibrary from './pages/ManageLibrary';
-import ManageTraining from './pages/ManageTraining';
-import ManageAI from './pages/ManageAI';
-import Downloads from './pages/Downloads';
-import FileViewer from './pages/FileViewer';
-import Chat from './pages/Chat';
-import ChatConversation from './pages/ChatConversation';
-import ManageChat from './pages/ManageChat';
-import ManageAnalytics from './pages/ManageAnalytics';
-import { TermsAndConditions, PrivacyPolicy, DeleteAccount } from './pages/LegalSupport';
-import Support from './pages/Support';
 import BottomNav from './components/BottomNav';
+import AnimatedSplash from './components/AnimatedSplash';
 import AIChatPanel from './components/AIChatPanel';
 import OfflineLoginScreen from './components/OfflineLoginScreen';
 import OfflineScreen from './components/OfflineScreen';
@@ -53,35 +27,70 @@ import { AnalyticsProvider } from './context/AnalyticsContext';
 import { ChatProvider } from './context/ChatContext';
 import CreatePostModal from './components/CreatePostModal';
 import OrganizationGate from './pages/OrganizationGate';
-import ManageOrgCode from './pages/ManageOrgCode';
 // Field Intel — ships dark by default; lights up when ENABLE_FIELD_INTEL is true.
 import { ENABLE_FIELD_INTEL } from './config/features';
 import { FieldIntelProvider, useFieldIntel } from './field-intel/FieldIntelContext';
 import { FieldIntelNotificationsProvider } from './context/FieldIntelNotificationsContext';
-import FieldIntelZone from './field-intel/FieldIntelZone';
 import FieldIntelPlaceholder from './field-intel/FieldIntelPlaceholder';
-import CSVImport from './field-intel/admin/CSVImport';
-import RegionManager from './field-intel/admin/RegionManager';
-import RegionAccountAssigner from './field-intel/admin/RegionAccountAssigner';
-import HierarchyOrgChart from './field-intel/admin/HierarchyOrgChart';
-import CustomFieldManager from './field-intel/admin/CustomFieldManager';
-import DelegationScreen from './field-intel/DelegationScreen';
-import SurgeonList from './field-intel/SurgeonList';
-import SurgeonDossier from './field-intel/SurgeonDossier';
-import CallLogHistory from './field-intel/CallLogHistory';
-import CallLogEntry from './field-intel/CallLogEntry';
-import LeadQueue from './field-intel/LeadQueue';
-import LeadSubmit from './field-intel/LeadSubmit';
-import ChangeRequest from './field-intel/ChangeRequest';
-import DrillDownView from './field-intel/DrillDownView';
-import PipelineView from './field-intel/PipelineView';
-import DealReview from './field-intel/DealReview';
-import RepDashboard from './field-intel/dashboards/RepDashboard';
-import ManagerDashboard from './field-intel/dashboards/ManagerDashboard';
-import VPDashboard from './field-intel/dashboards/VPDashboard';
-import AdminDashboard from './field-intel/dashboards/AdminDashboard';
-import ActivityFeed from './field-intel/dashboards/ActivityFeed';
 import './App.css';
+
+// Route-level screens are code-split so the initial bundle only ships what's
+// needed to boot + authenticate. Each chunk loads on first navigation to it.
+const Login = React.lazy(() => import('./onboarding/Login'));
+const SignUp = React.lazy(() => import('./onboarding/SignUp'));
+const EmailConfirmation = React.lazy(() => import('./onboarding/EmailConfirmation'));
+const EmailConfirmed = React.lazy(() => import('./pages/EmailConfirmed'));
+const ForgotPassword = React.lazy(() => import('./onboarding/ForgotPassword'));
+const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
+const ProfileComplete = React.lazy(() => import('./onboarding/ProfileComplete'));
+const Home = React.lazy(() => import('./pages/Home'));
+const Profile = React.lazy(() => import('./pages/Profile'));
+const NotificationSettings = React.lazy(() => import('./pages/NotificationSettings'));
+const EditProfile = React.lazy(() => import('./pages/EditProfile'));
+const ManageUsers = React.lazy(() => import('./pages/ManageUsers'));
+const Directory = React.lazy(() => import('./pages/Directory'));
+const DirectoryPermissions = React.lazy(() => import('./pages/DirectoryPermissions'));
+const Resources = React.lazy(() => import('./pages/Resources'));
+const ManageForms = React.lazy(() => import('./pages/ManageForms'));
+const ManageLibrary = React.lazy(() => import('./pages/ManageLibrary'));
+const ManageTraining = React.lazy(() => import('./pages/ManageTraining'));
+const ManageAI = React.lazy(() => import('./pages/ManageAI'));
+const Downloads = React.lazy(() => import('./pages/Downloads'));
+const FileViewer = React.lazy(() => import('./pages/FileViewer'));
+const Chat = React.lazy(() => import('./pages/Chat'));
+const ChatConversation = React.lazy(() => import('./pages/ChatConversation'));
+const ManageChat = React.lazy(() => import('./pages/ManageChat'));
+const ManageAnalytics = React.lazy(() => import('./pages/ManageAnalytics'));
+const TermsAndConditions = React.lazy(() => import('./pages/LegalSupport').then(m => ({ default: m.TermsAndConditions })));
+const PrivacyPolicy = React.lazy(() => import('./pages/LegalSupport').then(m => ({ default: m.PrivacyPolicy })));
+const DeleteAccount = React.lazy(() => import('./pages/LegalSupport').then(m => ({ default: m.DeleteAccount })));
+const Support = React.lazy(() => import('./pages/Support'));
+const ManageOrgCode = React.lazy(() => import('./pages/ManageOrgCode'));
+
+// Field Intel subtree — a large sub-app most users never open. Every screen
+// below only downloads once someone actually navigates into /field-intel/*.
+const FieldIntelZone = React.lazy(() => import('./field-intel/FieldIntelZone'));
+const CSVImport = React.lazy(() => import('./field-intel/admin/CSVImport'));
+const RegionManager = React.lazy(() => import('./field-intel/admin/RegionManager'));
+const RegionAccountAssigner = React.lazy(() => import('./field-intel/admin/RegionAccountAssigner'));
+const HierarchyOrgChart = React.lazy(() => import('./field-intel/admin/HierarchyOrgChart'));
+const CustomFieldManager = React.lazy(() => import('./field-intel/admin/CustomFieldManager'));
+const DelegationScreen = React.lazy(() => import('./field-intel/DelegationScreen'));
+const SurgeonList = React.lazy(() => import('./field-intel/SurgeonList'));
+const SurgeonDossier = React.lazy(() => import('./field-intel/SurgeonDossier'));
+const CallLogHistory = React.lazy(() => import('./field-intel/CallLogHistory'));
+const CallLogEntry = React.lazy(() => import('./field-intel/CallLogEntry'));
+const LeadQueue = React.lazy(() => import('./field-intel/LeadQueue'));
+const LeadSubmit = React.lazy(() => import('./field-intel/LeadSubmit'));
+const ChangeRequest = React.lazy(() => import('./field-intel/ChangeRequest'));
+const DrillDownView = React.lazy(() => import('./field-intel/DrillDownView'));
+const PipelineView = React.lazy(() => import('./field-intel/PipelineView'));
+const DealReview = React.lazy(() => import('./field-intel/DealReview'));
+const RepDashboard = React.lazy(() => import('./field-intel/dashboards/RepDashboard'));
+const ManagerDashboard = React.lazy(() => import('./field-intel/dashboards/ManagerDashboard'));
+const VPDashboard = React.lazy(() => import('./field-intel/dashboards/VPDashboard'));
+const AdminDashboard = React.lazy(() => import('./field-intel/dashboards/AdminDashboard'));
+const ActivityFeed = React.lazy(() => import('./field-intel/dashboards/ActivityFeed'));
 
 // Routes that should NOT show bottom nav. Field Intel runs its own in-zone nav,
 // so the global bottom nav is hidden across the whole /field-intel subtree.
@@ -173,7 +182,7 @@ const AppShell = ({ children, showNav = false }) => {
   return (
     <div className="app-shell">
       <div className="app-content">
-        {children}
+        <div className="page-transition">{children}</div>
       </div>
       {showNav && <BottomNav />}
       {showNav && <CreatePostModal />}
@@ -413,24 +422,7 @@ function AppContent() {
   }
 
   if (loading) {
-    return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        backgroundColor: '#f8fafc'
-      }}>
-        <div style={{
-          width: '40px',
-          height: '40px',
-          border: '3px solid #e2e8f0',
-          borderTop: '3px solid var(--primary-blue)',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite'
-        }} />
-      </div>
-    );
+    return <AnimatedSplash />;
   }
 
   // Show offline login screen when offline and not authenticated
@@ -473,6 +465,7 @@ function AppContent() {
         </div>
       )}
       <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+        <React.Suspense fallback={<AnimatedSplash />}>
         <Routes>
           {/* Public Routes - Only accessible when NOT logged in */}
           <Route path="/" element={
@@ -689,6 +682,7 @@ function AppContent() {
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </React.Suspense>
       </div>
     </div>
   );

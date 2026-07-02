@@ -7,6 +7,7 @@ import { useAppSettings } from '../context/AppSettingsContext';
 import { supabase } from '../config/supabase';
 import { ENABLE_FIELD_INTEL } from '../config/features';
 import { useFieldIntelNotifications } from '../context/FieldIntelNotificationsContext';
+import { useHaptic } from '../hooks/useHaptic';
 
 // Icons
 const FieldIntelIcon = () => (
@@ -92,6 +93,7 @@ const BottomNav = () => {
   // Safe when Field Intel is dark: the provider isn't mounted, the hook returns a default.
   const { totalUnread: fieldIntelUnread = 0 } = useFieldIntelNotifications();
   const { settings } = useAppSettings();
+  const haptic = useHaptic();
 
   // Check admin chat_mode setting
   useEffect(() => {
@@ -167,6 +169,7 @@ const BottomNav = () => {
   const activeTab = getActiveTab();
 
   const handleTabPress = (tab) => {
+    haptic.light();
     setExpanded(false);
     if (tab.id === 'ai') {
       openChat();
@@ -182,6 +185,7 @@ const BottomNav = () => {
     return (
       <button
         key={tab.id}
+        className="press-scale"
         style={{
           ...styles.navBtn,
           ...(isActive ? styles.navBtnActive : {}),
@@ -213,8 +217,9 @@ const BottomNav = () => {
 
     return (
       <button
+        className="press-scale"
         style={styles.navBtn}
-        onClick={() => setExpanded(true)}
+        onClick={() => { haptic.light(); setExpanded(true); }}
       >
         <div style={{ ...styles.iconContainer, position: 'relative' }}>
           <ChevronUpIcon />
@@ -231,8 +236,9 @@ const BottomNav = () => {
         <>
           {/* Close bar */}
           <button
+            className="press-scale"
             style={styles.closeBar}
-            onClick={() => setExpanded(false)}
+            onClick={() => { haptic.light(); setExpanded(false); }}
           >
             <ChevronDownIcon />
             <span style={styles.closeLabel}>Close</span>
@@ -298,11 +304,11 @@ const styles = {
     padding: '6px 0',
     backgroundColor: 'var(--background-off-white)',
     border: 'none',
-    borderRadius: '12px',
+    borderRadius: 'var(--radius-md, 12px)',
     cursor: 'pointer',
     color: 'var(--text-muted)',
     marginBottom: '4px',
-    transition: 'all 0.2s ease',
+    transition: 'all var(--motion-fast, 150ms) var(--ease-standard, ease)',
   },
   closeLabel: {
     fontSize: '12px',
@@ -324,7 +330,7 @@ const styles = {
     border: 'none',
     cursor: 'pointer',
     color: 'var(--text-light)',
-    transition: 'all 0.2s ease',
+    transition: 'color var(--motion-fast, 150ms) var(--ease-standard, ease)',
     flex: '1 1 0',
     minWidth: 0,
   },
@@ -334,15 +340,17 @@ const styles = {
   iconContainer: {
     width: '32px',
     height: '32px',
-    borderRadius: '10px',
+    borderRadius: 'var(--radius-sm, 10px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
-    transition: 'all 0.2s ease',
+    transform: 'scale(1)',
+    transition: 'background-color var(--motion-fast, 150ms) var(--ease-standard, ease), transform var(--motion-fast, 150ms) var(--ease-spring, ease)',
   },
   iconContainerActive: {
     backgroundColor: 'rgba(var(--primary-blue-rgb), 0.1)',
+    transform: 'scale(1.08)',
   },
   navLabel: {
     fontSize: '10px',

@@ -48,6 +48,41 @@ const theme = {
     error: '#ef4444',
     info: '#3b82f6',
   },
+
+  // ===========================================
+  // ELEVATION - shadow scale, low to high
+  // ===========================================
+  elevation: {
+    xs: '0 1px 2px rgba(15, 23, 42, 0.04)',
+    sm: '0 1px 3px rgba(15, 23, 42, 0.08)',
+    md: '0 4px 12px rgba(15, 23, 42, 0.10)',
+    lg: '0 8px 24px rgba(15, 23, 42, 0.14)',
+    xl: '0 16px 40px rgba(15, 23, 42, 0.18)',
+  },
+
+  // ===========================================
+  // RADIUS - corner scale
+  // ===========================================
+  radius: {
+    xs: '4px',
+    sm: '8px',
+    md: '12px',
+    lg: '16px',
+    xl: '20px',
+    full: '999px',
+  },
+
+  // ===========================================
+  // MOTION - durations + easing curves
+  // ===========================================
+  motion: {
+    fast: '150ms',
+    base: '220ms',
+    slow: '350ms',
+    easeStandard: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    easePremium: 'cubic-bezier(0.16, 1, 0.3, 1)',
+    easeSpring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+  },
 };
 
 // ===========================================
@@ -111,6 +146,29 @@ export const generateCSSVariables = () => `
     --warning: ${theme.status.warning};
     --error: ${theme.status.error};
     --info: ${theme.status.info};
+
+    /* Elevation (shadows) */
+    --shadow-xs: ${theme.elevation.xs};
+    --shadow-sm: ${theme.elevation.sm};
+    --shadow-md: ${theme.elevation.md};
+    --shadow-lg: ${theme.elevation.lg};
+    --shadow-xl: ${theme.elevation.xl};
+
+    /* Radius scale */
+    --radius-xs: ${theme.radius.xs};
+    --radius-sm: ${theme.radius.sm};
+    --radius-md: ${theme.radius.md};
+    --radius-lg: ${theme.radius.lg};
+    --radius-xl: ${theme.radius.xl};
+    --radius-full: ${theme.radius.full};
+
+    /* Motion */
+    --motion-fast: ${theme.motion.fast};
+    --motion-base: ${theme.motion.base};
+    --motion-slow: ${theme.motion.slow};
+    --ease-standard: ${theme.motion.easeStandard};
+    --ease-premium: ${theme.motion.easePremium};
+    --ease-spring: ${theme.motion.easeSpring};
 
     /* Legacy variable names for compatibility */
     --primary-blue: ${theme.brand.primary};

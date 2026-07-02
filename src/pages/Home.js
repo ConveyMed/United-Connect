@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { usePosts } from '../context/PostsContext';
 import { useAuth } from '../context/AuthContext';
 import { useActivityNotifications } from '../context/ActivityNotificationsContext';
@@ -8,6 +8,7 @@ import PushNotificationPrompt from '../components/PushNotificationPrompt';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation } from 'swiper/modules';
 import { openInAppBrowser } from '../utils/browser';
+import { useHaptic } from '../hooks/useHaptic';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -123,7 +124,7 @@ const EditIcon = () => (
 );
 
 // Post Component
-const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
+const Post = React.memo(({ post, currentUserId, isAdmin, onEditPost }) => {
   const {
     toggleLike,
     isPostLiked,
@@ -161,6 +162,8 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCommentDeleteConfirm, setShowCommentDeleteConfirm] = useState(null); // comment id to delete
   const [newDividerIndex, setNewDividerIndex] = useState(null);
+  const [likeBurst, setLikeBurst] = useState(0);
+  const haptic = useHaptic();
 
   const isLiked = isPostLiked(post.id);
   const isBookmarked = isPostBookmarked(post.id);
@@ -222,10 +225,17 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
   };
 
   const handleLike = () => {
+    if (!isLiked) {
+      haptic.medium();
+      setLikeBurst(b => b + 1);
+    } else {
+      haptic.light();
+    }
     toggleLike(post.id);
   };
 
   const handleBookmark = () => {
+    haptic.light();
     toggleBookmark(post.id);
   };
 
@@ -235,6 +245,7 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
     setIsSubmitting(true);
     try {
       await addComment(post.id, newComment);
+      haptic.light();
       setNewComment('');
       // Immediately update the read count so our own comment doesn't show as "New"
       trackPostRead(post.id, (post.comments?.length || 0) + 1);
@@ -521,23 +532,28 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
       {showPostInteractions && (
       <div style={styles.actionButtons}>
         <button
+          className="press-scale"
           style={{
             ...styles.actionButton,
             ...(isLiked ? styles.actionButtonActive : {}),
           }}
           onClick={handleLike}
         >
-          <HeartIcon filled={isLiked} />
+          <span key={likeBurst} className={likeBurst > 0 && isLiked ? 'like-burst' : ''}>
+            <HeartIcon filled={isLiked} />
+          </span>
           <span>{isLiked ? 'Liked' : 'Like'}</span>
         </button>
         <button
+          className="press-scale"
           style={styles.actionButton}
-          onClick={() => setShowComments(!showComments)}
+          onClick={() => { haptic.light(); setShowComments(!showComments); }}
         >
           <CommentIcon />
           <span>Comment</span>
         </button>
         <button
+          className="press-scale"
           style={{
             ...styles.actionButton,
             ...(isBookmarked ? styles.actionButtonBookmarked : {}),
@@ -661,7 +677,7 @@ const Post = ({ post, currentUserId, isAdmin, onEditPost }) => {
       )}
     </article>
   );
-};
+});
 
 // Close Icon for Edit Modal
 const CloseIcon = () => (
@@ -1939,6 +1955,7 @@ const Home = () => {
   const { posts, scheduledPosts, loading, openCreateModal, isPostBookmarked, updatePost, loadScheduledPosts, updateScheduledPost, deleteScheduledPost, refreshPosts } = usePosts();
   const { user, userProfile } = useAuth();
   const { triggerBanner, scrollTarget, clearScrollTarget } = useActivityNotifications();
+  const haptic = useHaptic();
   const [searchQuery, setSearchQuery] = useState('');
   const [showBookmarks, setShowBookmarks] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
@@ -2018,6 +2035,7 @@ const Home = () => {
 
   const handleTouchEnd = async () => {
     if (pullDistance >= PULL_THRESHOLD && !isRefreshing) {
+      haptic.medium();
       setIsRefreshing(true);
       setPullDistance(PULL_THRESHOLD);
       try {
@@ -2045,9 +2063,9 @@ const Home = () => {
     return 0; // Keep original order (already sorted by date)
   });
 
-  const handleEditPost = (post) => {
+  const handleEditPost = useCallback((post) => {
     setEditingPost(post);
-  };
+  }, []);
 
   const handleSaveEdit = async (updatedData) => {
     if (updatePost) {
@@ -2389,8 +2407,9 @@ const Home = () => {
       {/* Admin FAB - Create Post */}
       {isAdmin && (
         <button
+          className="press-scale"
           style={styles.fab}
-          onClick={openCreateModal}
+          onClick={() => { haptic.medium(); openCreateModal(); }}
         >
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -2660,9 +2679,10 @@ const styles = {
   // Post styles
   post: {
     backgroundColor: '#ffffff',
-    borderRadius: '16px',
+    borderRadius: 'var(--radius-lg, 16px)',
     overflow: 'visible',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+    boxShadow: 'var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.08))',
+    transition: 'box-shadow var(--motion-base, 220ms) var(--ease-standard, ease)',
   },
   postHeader: {
     display: 'flex',
@@ -3145,9 +3165,9 @@ const styles = {
   // Loading skeleton styles
   postSkeleton: {
     backgroundColor: '#ffffff',
-    borderRadius: '16px',
+    borderRadius: 'var(--radius-lg, 16px)',
     overflow: 'hidden',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+    boxShadow: 'var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.08))',
     padding: '16px',
   },
   skeletonHeader: {
@@ -3160,8 +3180,9 @@ const styles = {
     width: '48px',
     height: '48px',
     borderRadius: '50%',
-    backgroundColor: 'var(--border-light)',
-    animation: 'pulse 1.5s ease-in-out infinite',
+    background: 'linear-gradient(90deg, var(--border-light) 0px, rgba(255,255,255,0.7) 40px, var(--border-light) 80px)',
+    backgroundSize: '400px 100%',
+    animation: 'shimmer 1.4s ease-in-out infinite',
   },
   skeletonAuthorInfo: {
     flex: 1,
@@ -3173,15 +3194,17 @@ const styles = {
     width: '140px',
     height: '14px',
     borderRadius: '4px',
-    backgroundColor: 'var(--border-light)',
-    animation: 'pulse 1.5s ease-in-out infinite',
+    background: 'linear-gradient(90deg, var(--border-light) 0px, rgba(255,255,255,0.7) 40px, var(--border-light) 80px)',
+    backgroundSize: '400px 100%',
+    animation: 'shimmer 1.4s ease-in-out infinite',
   },
   skeletonTitle: {
     width: '100px',
     height: '12px',
     borderRadius: '4px',
-    backgroundColor: 'var(--border-light)',
-    animation: 'pulse 1.5s ease-in-out infinite',
+    background: 'linear-gradient(90deg, var(--border-light) 0px, rgba(255,255,255,0.7) 40px, var(--border-light) 80px)',
+    backgroundSize: '400px 100%',
+    animation: 'shimmer 1.4s ease-in-out infinite',
   },
   skeletonContent: {
     display: 'flex',
@@ -3193,15 +3216,17 @@ const styles = {
     width: '100%',
     height: '12px',
     borderRadius: '4px',
-    backgroundColor: 'var(--border-light)',
-    animation: 'pulse 1.5s ease-in-out infinite',
+    background: 'linear-gradient(90deg, var(--border-light) 0px, rgba(255,255,255,0.7) 40px, var(--border-light) 80px)',
+    backgroundSize: '400px 100%',
+    animation: 'shimmer 1.4s ease-in-out infinite',
   },
   skeletonImage: {
     width: '100%',
     height: '200px',
     borderRadius: '12px',
-    backgroundColor: 'var(--border-light)',
-    animation: 'pulse 1.5s ease-in-out infinite',
+    background: 'linear-gradient(90deg, var(--border-light) 0px, rgba(255,255,255,0.7) 40px, var(--border-light) 80px)',
+    backgroundSize: '400px 100%',
+    animation: 'shimmer 1.4s ease-in-out infinite',
   },
 };
 
