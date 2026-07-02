@@ -57,7 +57,6 @@ const OrganizationGate = ({ onVerified }) => {
             onChange={(e) => { setCode(e.target.value); setError(''); }}
             placeholder="Enter code"
             style={styles.input}
-            autoFocus
             autoComplete="off"
           />
           {error && <p style={styles.error}>{error}</p>}

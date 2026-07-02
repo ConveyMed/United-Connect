@@ -19,6 +19,10 @@ const config: CapacitorConfig = {
       backgroundColor: '#01040F',
       launchAutoHide: true,
       androidScaleType: 'CENTER_INSIDE'
+    },
+    Keyboard: {
+      resize: 'body',
+      resizeOnFullScreen: true
     }
   }
 };

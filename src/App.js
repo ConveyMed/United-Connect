@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { App as CapacitorApp } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
@@ -177,11 +177,32 @@ const ReturningUserPermissions = () => {
   return null;
 };
 
-// App shell wrapper - fixed shell with scrollable content area
+// App shell wrapper - fixed shell with scrollable content area.
+// AppShell is reused (not remounted) across route changes since React Router
+// renders it at the same tree position for every route, so we manage scroll
+// position per pathname ourselves: save it on the way out, restore it (or
+// reset to top for a route with no saved position) on the way in.
+const scrollPositions = new Map();
+
 const AppShell = ({ children, showNav = false }) => {
+  const location = useLocation();
+  const contentRef = useRef(null);
+  const prevPathRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const prevPath = prevPathRef.current;
+    if (prevPath && prevPath !== location.pathname) {
+      scrollPositions.set(prevPath, el.scrollTop);
+    }
+    el.scrollTop = scrollPositions.get(location.pathname) || 0;
+    prevPathRef.current = location.pathname;
+  }, [location.pathname]);
+
   return (
     <div className="app-shell">
-      <div className="app-content">
+      <div className="app-content" ref={contentRef}>
         <div className="page-transition">{children}</div>
       </div>
       {showNav && <BottomNav />}
@@ -236,6 +257,14 @@ function AppContent() {
   const [orgCodeVerified, setOrgCodeVerified] = useState(() =>
     localStorage.getItem('org_code_verified') === 'true'
   );
+
+  // Auth often resolves in a few ms, which would make the splash flash by
+  // unseen. Hold it up for a minimum stretch so the boot animation registers.
+  const [minSplashElapsed, setMinSplashElapsed] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setMinSplashElapsed(true), 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Check for signup confirmation in URL hash and redirect to email-confirmed page
   useEffect(() => {
@@ -421,7 +450,7 @@ function AppContent() {
     );
   }
 
-  if (loading) {
+  if (loading || !minSplashElapsed) {
     return <AnimatedSplash />;
   }
 
@@ -465,7 +494,7 @@ function AppContent() {
         </div>
       )}
       <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-        <React.Suspense fallback={<AnimatedSplash />}>
+        <React.Suspense fallback={null}>
         <Routes>
           {/* Public Routes - Only accessible when NOT logged in */}
           <Route path="/" element={
