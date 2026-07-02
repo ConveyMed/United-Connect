@@ -10,8 +10,6 @@ PODS:
   - CapacitorCordova (6.2.1)
   - CapacitorHaptics (6.0.3):
     - Capacitor
-  - CapacitorKeyboard (6.0.4):
-    - Capacitor
   - CapacitorNetwork (6.0.4):
     - Capacitor
   - CapacitorSplashScreen (6.0.4):
@@ -75,7 +73,6 @@ DEPENDENCIES:
   - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
-  - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
   - "CapacitorNetwork (from `../../node_modules/@capacitor/network`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
@@ -98,8 +95,6 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorHaptics:
     :path: "../../node_modules/@capacitor/haptics"
-  CapacitorKeyboard:
-    :path: "../../node_modules/@capacitor/keyboard"
   CapacitorNetwork:
     :path: "../../node_modules/@capacitor/network"
   CapacitorSplashScreen:
@@ -116,13 +111,12 @@ SPEC CHECKSUMS:
   CapacitorCamera: 5ba135b0cb55a788758139fa2404d726bf60f0f3
   CapacitorCordova: 8d93e14982f440181be7304aa9559ca631d77fff
   CapacitorHaptics: 40f83026feeee9cfe36e89e9c98a3baaaf20c450
-  CapacitorKeyboard: e8cd50fd5cbdd023a5947a5c0f5cca6e5aa5a253
   CapacitorNetwork: 093efa3664b692a971bdd01be70523291cd6a87f
   CapacitorSplashScreen: ef140a8b1ea7244e0c245ce2dd4ce5251e7ab86a
   CapacitorStatusBar: 149cde8f1328ec3aa6cbdd872a55137ae3f98b16
   CordovaPluginsStatic: 834e0d1c528e2d8e11ce023b156922da53d6b634
   OneSignalXCFramework: ea9e14a95b92ad48d9b35037cbae88a9542bdea3
 
-PODFILE CHECKSUM: 6972b3c18cdc9d4336362b27b9599329c72f5bbf
+PODFILE CHECKSUM: 5a70c3b6356cdd2c60ad249a4413e3a24a8169e3
 
 COCOAPODS: 1.16.2
