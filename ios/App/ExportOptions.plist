@@ -7,7 +7,12 @@
     <key>teamID</key>
     <string>9B895DPQKP</string>
     <key>signingStyle</key>
-    <string>automatic</string>
+    <string>manual</string>
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>com.unitedconnect.app</key>
+        <string>com.unitedconnect.app AppStore</string>
+    </dict>
     <key>stripSwiftSymbols</key>
     <true/>
     <key>uploadSymbols</key>

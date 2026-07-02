@@ -31,18 +31,44 @@ platform :ios do
 
   desc "Web build + Capacitor sync + Xcode archive + export signed IPA"
   lane :build do
+    # Remove any stale archive/export dir BEFORE cap sync — a leftover ios/App/build makes
+    # `cap sync ios` fail with a misleading "ios platform has not been added yet".
+    sh("rm", "-rf", "build")
     Dir.chdir("../..") do
       sh("npm", "run", "build")
       sh("npx", "cap", "sync", "ios")
     end
+    archive_only
+  end
+
+  desc "Xcode archive + export signed IPA only (web build + cap sync already done)"
+  lane :archive_only do
     sh("rm", "-rf", "build")
+    # Manual signing on the App target ONLY. Setting the profile globally (via xcargs)
+    # leaks it onto the Pods targets, which don't support provisioning profiles.
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path:                  "App.xcodeproj",
+      team_id:               "9B895DPQKP",
+      code_sign_identity:    "Apple Distribution",
+      profile_name:          "com.unitedconnect.app AppStore",
+      targets:               ["App"],
+      bundle_identifier:     "com.unitedconnect.app"
+    )
     build_app(
       workspace:        "App.xcworkspace",
       scheme:           "App",
       configuration:    "Release",
       export_method:    "app-store",
       output_directory: "build",
-      clean:            true
+      clean:            true,
+      export_options: {
+        method:       "app-store",
+        signingStyle: "manual",
+        provisioningProfiles: {
+          "com.unitedconnect.app" => "com.unitedconnect.app AppStore"
+        }
+      }
     )
   end
 
@@ -50,8 +76,9 @@ platform :ios do
   lane :upload do
     upload_to_testflight(
       api_key:                           asc_key,
+      ipa:                               "build/App.ipa",
       skip_submission:                   true,
-      skip_waiting_for_build_processing: false
+      skip_waiting_for_build_processing: true
     )
   end
 

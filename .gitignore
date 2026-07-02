@@ -41,3 +41,13 @@ transcript.md
 assets-from-mike/
 .netlify
 NETLIFY_ENV.md
+
+# Android signing (local-only; backed up in 1Password)
+*.jks
+android/keystore.properties
+# iOS/Android signing artifacts (local-only; certs live in keychain/1Password)
+*.p12
+*.cer
+*.certSigningRequest
+*.mobileprovision
+android/upload_certificate.pem

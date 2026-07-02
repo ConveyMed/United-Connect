@@ -31,6 +31,14 @@ Show latest TestFlight build number
 
 Web build + Capacitor sync + Xcode archive + export signed IPA
 
+### ios archive_only
+
+```sh
+[bundle exec] fastlane ios archive_only
+```
+
+Xcode archive + export signed IPA only (web build + cap sync already done)
+
 ### ios upload
 
 ```sh
