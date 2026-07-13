@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { get, set, del, keys, entries } from 'idb-keyval';
 import { useAuth } from './AuthContext';
+import { logAssetEvent } from '../services/analytics';
 
 const DownloadsContext = createContext({});
 
@@ -149,6 +150,16 @@ export const DownloadsProvider = ({ children }) => {
       };
 
       await set(key, downloadData);
+
+      // Track download event for analytics
+      logAssetEvent(
+        user.id,
+        contentId,
+        contentItem.title || contentItem.file_name || 'Unknown',
+        contentItem.categoryTitle || 'Unknown',
+        contentItem.categoryType || 'library',
+        'download'
+      );
 
       // Update local state
       setDownloads(prev => [downloadData, ...prev]);

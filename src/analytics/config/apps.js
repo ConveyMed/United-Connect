@@ -5,7 +5,7 @@
 export const APPS = {
   thisapp: {
     id: 'thisapp',
-    name: 'TODO-AppName',
+    name: 'United Connect',
     supabaseUrl: 'https://wyeopzxtpywmauttizuy.supabase.co',
     supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5ZW9wenh0cHl3bWF1dHRpenV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3ODAwODIsImV4cCI6MjA5ODM1NjA4Mn0.KwVM-3oKGoTcIhw7UW-8oz25O3GFeINkqE6uLvPohns',
   },

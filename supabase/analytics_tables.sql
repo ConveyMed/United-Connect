@@ -29,7 +29,7 @@ CREATE POLICY "Users can update their own sessions"
   ON user_sessions FOR UPDATE
   USING (auth.uid() = user_id);
 
--- service_role bypasses RLS for reads; no SELECT policy needed.
+-- Admin/owner SELECT policy added at the bottom of this file (dashboard reads client-side).
 
 -- ============================================
 -- SCREEN VIEWS
@@ -53,7 +53,7 @@ CREATE POLICY "Users can insert their own screen views"
   ON screen_views FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
--- service_role bypasses RLS for reads; no SELECT policy needed.
+-- Admin/owner SELECT policy added at the bottom of this file (dashboard reads client-side).
 
 -- ============================================
 -- ASSET EVENTS
@@ -82,7 +82,7 @@ CREATE POLICY "Users can insert their own asset events"
   ON asset_events FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
--- service_role bypasses RLS for reads; no SELECT policy needed.
+-- Admin/owner SELECT policy added at the bottom of this file (dashboard reads client-side).
 
 -- ============================================
 -- AI QUERIES
@@ -105,7 +105,7 @@ CREATE POLICY "Users can insert their own AI queries"
   ON ai_queries FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
--- service_role bypasses RLS for reads; no SELECT policy needed.
+-- Admin/owner SELECT policy added at the bottom of this file (dashboard reads client-side).
 
 -- ============================================
 -- PROFILE VIEWS
@@ -128,7 +128,7 @@ CREATE POLICY "Users can insert their own profile views"
   ON profile_views FOR INSERT
   WITH CHECK (auth.uid() = viewer_id);
 
--- service_role bypasses RLS for reads; no SELECT policy needed.
+-- Admin/owner SELECT policy added at the bottom of this file (dashboard reads client-side).
 
 -- ============================================
 -- DIRECTORY SEARCHES
@@ -151,7 +151,7 @@ CREATE POLICY "Users can insert their own directory searches"
   ON directory_searches FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
--- service_role bypasses RLS for reads; no SELECT policy needed.
+-- Admin/owner SELECT policy added at the bottom of this file (dashboard reads client-side).
 
 -- ============================================
 -- NOTIFICATION CLICKS
@@ -174,7 +174,7 @@ CREATE POLICY "Users can insert their own notification clicks"
   ON notification_clicks FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
--- service_role bypasses RLS for reads; no SELECT policy needed.
+-- Admin/owner SELECT policy added at the bottom of this file (dashboard reads client-side).
 
 -- ============================================
 -- OWNER PROFILES
@@ -277,3 +277,55 @@ FROM ai_queries q
 LEFT JOIN public.users u ON u.id = q.user_id
 WHERE q.confidence = 'none'
 ORDER BY q.created_at DESC;
+
+-- ============================================
+-- ANALYTICS DASHBOARD SELECT POLICIES
+-- The in-app analytics dashboard (/manage-analytics) reads these tables
+-- client-side with the anon key + the logged-in user's session. Without
+-- SELECT policies, RLS returns zero rows and every dashboard page is empty.
+-- Idempotent: safe to re-run on existing DBs.
+-- ============================================
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'user_sessions' AND policyname = 'Admins and owners can view all sessions') THEN
+    CREATE POLICY "Admins and owners can view all sessions"
+      ON user_sessions FOR SELECT
+      USING (EXISTS (SELECT 1 FROM users WHERE users.id = auth.uid() AND (users.is_admin OR users.is_owner)));
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'screen_views' AND policyname = 'Admins and owners can view all screen views') THEN
+    CREATE POLICY "Admins and owners can view all screen views"
+      ON screen_views FOR SELECT
+      USING (EXISTS (SELECT 1 FROM users WHERE users.id = auth.uid() AND (users.is_admin OR users.is_owner)));
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'asset_events' AND policyname = 'Admins and owners can view all asset events') THEN
+    CREATE POLICY "Admins and owners can view all asset events"
+      ON asset_events FOR SELECT
+      USING (EXISTS (SELECT 1 FROM users WHERE users.id = auth.uid() AND (users.is_admin OR users.is_owner)));
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'ai_queries' AND policyname = 'Admins and owners can view all AI queries') THEN
+    CREATE POLICY "Admins and owners can view all AI queries"
+      ON ai_queries FOR SELECT
+      USING (EXISTS (SELECT 1 FROM users WHERE users.id = auth.uid() AND (users.is_admin OR users.is_owner)));
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'profile_views' AND policyname = 'Admins and owners can view all profile views') THEN
+    CREATE POLICY "Admins and owners can view all profile views"
+      ON profile_views FOR SELECT
+      USING (EXISTS (SELECT 1 FROM users WHERE users.id = auth.uid() AND (users.is_admin OR users.is_owner)));
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'directory_searches' AND policyname = 'Admins and owners can view all directory searches') THEN
+    CREATE POLICY "Admins and owners can view all directory searches"
+      ON directory_searches FOR SELECT
+      USING (EXISTS (SELECT 1 FROM users WHERE users.id = auth.uid() AND (users.is_admin OR users.is_owner)));
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'notification_clicks' AND policyname = 'Admins and owners can view all notification clicks') THEN
+    CREATE POLICY "Admins and owners can view all notification clicks"
+      ON notification_clicks FOR SELECT
+      USING (EXISTS (SELECT 1 FROM users WHERE users.id = auth.uid() AND (users.is_admin OR users.is_owner)));
+  END IF;
+END $$;
