@@ -72,6 +72,15 @@ export const DownloadsProvider = ({ children }) => {
     // Check if already downloaded
     const existing = await get(key);
     if (existing) {
+      // Still log the download event even when served from local cache
+      logAssetEvent(
+        user.id,
+        contentId,
+        contentItem.title || contentItem.file_name || 'Unknown',
+        contentItem.categoryTitle || 'Unknown',
+        contentItem.categoryType || 'library',
+        'download'
+      );
       return true; // Already downloaded
     }
 
