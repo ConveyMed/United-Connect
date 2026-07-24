@@ -85,7 +85,9 @@ platform :ios do
 
   desc "Submit current processed build for App Store review. Pass version: if auto-detect fails."
   lane :submit do |options|
-    version = options[:version] || sh("/usr/libexec/PlistBuddy", "-c", "Print CFBundleShortVersionString", "../App/Info.plist").strip rescue nil
+    # Info.plist uses $(MARKETING_VERSION), which does NOT resolve outside an Xcode
+    # build, so read the literal marketing version from the xcodeproj instead.
+    version = options[:version] || sh("grep", "-m1", "MARKETING_VERSION", "../App.xcodeproj/project.pbxproj").strip.match(/MARKETING_VERSION = ([^;]+);/)[1]
     deliver(
       api_key:            asc_key,
       app_version:        version,
