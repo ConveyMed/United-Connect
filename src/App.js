@@ -665,8 +665,8 @@ function AppContent() {
           } />
           {/* Public pages - no auth required */}
           <Route path="/support" element={<Support />} />
-          <Route path="/terms" element={<TermsAndConditions />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<AppShell showNav={showBottomNav}><TermsAndConditions /></AppShell>} />
+          <Route path="/privacy" element={<AppShell showNav={showBottomNav}><PrivacyPolicy /></AppShell>} />
           <Route path="/delete-account" element={
             !isAuthenticated
               ? <Navigate to="/" replace />
