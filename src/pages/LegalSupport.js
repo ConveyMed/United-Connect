@@ -29,7 +29,7 @@ const pageStyles = {
     display: 'flex',
     alignItems: 'center',
     padding: '12px 16px 8px 16px',
-    maxWidth: '600px',
+    maxWidth: 'var(--content-max)',
     margin: '0 auto',
     position: 'relative',
   },
@@ -50,7 +50,7 @@ const pageStyles = {
     marginLeft: '8px',
   },
   headerBorder: {
-    maxWidth: '600px',
+    maxWidth: 'var(--content-max)',
     margin: '0 auto',
     height: '2px',
     backgroundColor: 'rgba(var(--primary-blue-rgb), 0.15)',
@@ -64,7 +64,7 @@ const pageStyles = {
   },
   content: {
     width: '100%',
-    maxWidth: '600px',
+    maxWidth: 'var(--content-max)',
     padding: '24px 16px',
   },
   section: {

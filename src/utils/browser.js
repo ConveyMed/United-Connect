@@ -19,7 +19,7 @@ export const openInAppBrowser = async (url) => {
       // Native: Use Capacitor Browser (SFSafariViewController / Chrome Custom Tabs)
       await Browser.open({
         url: fullUrl,
-        presentationStyle: 'popover', // iOS: shows as overlay
+        presentationStyle: 'fullscreen', // iOS: shows as overlay
         toolbarColor: '#4CAC87', // United Green
       });
     } else {

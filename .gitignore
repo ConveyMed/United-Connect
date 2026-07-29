@@ -51,3 +51,5 @@ android/keystore.properties
 *.certSigningRequest
 *.mobileprovision
 android/upload_certificate.pem
+*.p8
+AuthKey_*

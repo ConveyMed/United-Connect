@@ -559,7 +559,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '12px 16px 8px 16px',
-    maxWidth: '600px',
+    maxWidth: 'var(--content-max)',
     margin: '0 auto',
   },
   backButton: {
@@ -584,7 +584,7 @@ const styles = {
     width: '40px',
   },
   headerBorder: {
-    maxWidth: '600px',
+    maxWidth: 'var(--content-max)',
     margin: '0 auto 16px auto',
     height: '2px',
     backgroundColor: 'rgba(var(--primary-blue-rgb), 0.15)',
@@ -650,7 +650,7 @@ const styles = {
   },
   content: {
     width: '100%',
-    maxWidth: '600px',
+    maxWidth: 'var(--content-max)',
     padding: '16px',
   },
   loadingContainer: {

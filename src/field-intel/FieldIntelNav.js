@@ -128,7 +128,7 @@ const styles = {
     justifyContent: 'center',
     gap: '4px',
     padding: '0 16px 8px 16px',
-    maxWidth: '600px',
+    maxWidth: 'var(--content-max)',
     margin: '0 auto',
   },
   tab: {

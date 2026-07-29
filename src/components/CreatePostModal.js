@@ -663,7 +663,7 @@ const styles = {
     left: '50%',
     transform: 'translateX(-50%) translateY(100%)',
     width: '100%',
-    maxWidth: '600px',
+    maxWidth: 'var(--content-max)',
     backgroundColor: '#ffffff',
     borderRadius: '24px',
     maxHeight: 'calc(100dvh - 100px - env(safe-area-inset-bottom, 0px))',

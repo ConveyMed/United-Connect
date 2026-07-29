@@ -27,6 +27,16 @@ body {
   --safe-area-bottom: 0px;
   --safe-area-left: 0px;
   --safe-area-right: 0px;
+  /* Responsive content column. Phone stays 600; iPad/tablet widen so screens
+     use the canvas instead of a centered phone strip. Inline styles reference
+     this via maxWidth:'var(--content-max)', so this one lever drives every
+     content column app-wide. */
+  --content-max: 600px;
+
+  /* Item preview pop-up width + thumbnail height on tablet. Same one-lever pattern. */
+  --modal-max: 400px;
+  --modal-thumb-max: 60vh;
+
 }
 
 /* App Shell - fixed, handles safe areas */
@@ -238,4 +248,15 @@ body {
   width: 18px !important;
   border-radius: 3px !important;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+
+/* iPad portrait and up */
+@media (min-width: 768px) {
+  :root { --content-max: 860px; --modal-max: 720px; --modal-thumb-max: 380px; }
+}
+
+/* iPad landscape / larger tablets */
+@media (min-width: 1112px) {
+  :root { --content-max: 1000px; --modal-max: 900px; --modal-thumb-max: 440px; }
 }

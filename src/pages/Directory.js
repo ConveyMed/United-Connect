@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import useIsTablet from '../hooks/useIsTablet';
 import { supabase } from '../config/supabase';
 import { useAnalytics } from '../context/AnalyticsContext';
 
@@ -44,6 +45,7 @@ const BriefcaseIcon = () => (
 );
 
 const Directory = () => {
+  const isTablet = useIsTablet();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -161,7 +163,7 @@ const Directory = () => {
               </p>
             </div>
           ) : (
-            <div style={styles.userList}>
+            <div style={{ ...styles.userList, ...(isTablet ? { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', alignItems: 'start' } : {}) }}>
               {filteredUsers.map(user => (
                 <button
                   key={user.id}
@@ -286,7 +288,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     padding: '12px 16px 8px 16px',
-    maxWidth: '600px',
+    maxWidth: 'var(--content-max)',
     margin: '0 auto',
   },
   headerTitle: {
@@ -296,7 +298,7 @@ const styles = {
     margin: 0,
   },
   headerBorder: {
-    maxWidth: '600px',
+    maxWidth: 'var(--content-max)',
     margin: '0 auto 16px auto',
     height: '2px',
     backgroundColor: 'rgba(var(--primary-blue-rgb), 0.15)',
@@ -338,7 +340,7 @@ const styles = {
   },
   content: {
     width: '100%',
-    maxWidth: '600px',
+    maxWidth: 'var(--content-max)',
     padding: '16px',
   },
   loadingContainer: {
