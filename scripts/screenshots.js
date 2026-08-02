@@ -156,7 +156,7 @@ async function runForDevice(device) {
     await page.locator('.login-primary-button').click({ force: true });
 
     // Wait for /home via client-side routing
-    const loggedIn = await waitForPath(page, '/home');
+    const loggedIn = await waitForPath(page, '/resources') || await waitForPath(page, '/home');
     if (!loggedIn) {
       // Debug: screenshot what we're seeing
       await page.screenshot({ path: path.join(OUTPUT_DIR, `debug-${device.name}.png`) });
