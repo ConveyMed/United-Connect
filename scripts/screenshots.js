@@ -22,7 +22,7 @@ const path = require('path');
 const fs = require('fs');
 
 // --- Config (override with env vars) ---
-const BASE_URL = `http://localhost:${process.env.PORT || 3001}`;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3001}`;
 const ORG_CODE = process.env.ORG_CODE || 'REPLACE_ORG_CODE';
 const EMAIL = process.env.TEST_EMAIL || 'REPLACE_TEST_EMAIL';
 const PASSWORD = process.env.TEST_PASSWORD || 'REPLACE_TEST_PASSWORD';

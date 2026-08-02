@@ -499,17 +499,17 @@ function AppContent() {
           {/* Public Routes - Only accessible when NOT logged in */}
           <Route path="/" element={
             isAuthenticated
-              ? (isProfileComplete ? <Navigate to="/home" replace /> : <Navigate to="/profile-complete" replace />)
+              ? (isProfileComplete ? <Navigate to="/resources" replace /> : <Navigate to="/profile-complete" replace />)
               : <AppShell><Login /></AppShell>
           } />
           <Route path="/signup" element={
             isAuthenticated
-              ? (isProfileComplete ? <Navigate to="/home" replace /> : <Navigate to="/profile-complete" replace />)
+              ? (isProfileComplete ? <Navigate to="/resources" replace /> : <Navigate to="/profile-complete" replace />)
               : <AppShell><SignUp /></AppShell>
           } />
           <Route path="/confirm-email" element={
             isAuthenticated
-              ? (isProfileComplete ? <Navigate to="/home" replace /> : <Navigate to="/profile-complete" replace />)
+              ? (isProfileComplete ? <Navigate to="/resources" replace /> : <Navigate to="/profile-complete" replace />)
               : <AppShell><EmailConfirmation /></AppShell>
           } />
           <Route path="/email-confirmed" element={<EmailConfirmed />} />
@@ -521,7 +521,7 @@ function AppContent() {
             !isAuthenticated
               ? <Navigate to="/" replace />
               : isProfileComplete
-                ? <Navigate to="/home" replace />
+                ? <Navigate to="/resources" replace />
                 : <AppShell><ProfileComplete onComplete={refreshProfile} /></AppShell>
           } />
 

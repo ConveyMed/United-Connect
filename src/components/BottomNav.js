@@ -123,29 +123,30 @@ const BottomNav = () => {
   const allItems = useMemo(() => {
     const items = [];
 
-    // 1. Home (always on)
-    items.push({ id: 'home', icon: HomeIcon, label: 'Home', path: '/home' });
-    // 2. Sales Tools (always on)
+    // United Ortho requested order: Sales Tools | AI Agent | Home | Downloads | Directory | Profile
+    // 1. Sales Tools (always on)
     items.push({ id: 'resources', icon: SalesToolsIcon, label: 'Sales Tools', path: '/resources' });
-    // Field Intel (dev flag; dark by default)
-    if (ENABLE_FIELD_INTEL) {
-      items.push({ id: 'field-intel', icon: FieldIntelIcon, label: 'Field Intel', path: '/field-intel', hasBadge: fieldIntelUnread > 0 });
-    }
-    // 3. Downloads (always on)
-    items.push({ id: 'downloads', icon: DownloadsIcon, label: 'Downloads', path: '/downloads' });
-    // 4. AI Agent (toggle)
+    // 2. AI Agent (toggle)
     if (showAIShortcut) {
       items.push({ id: 'ai', icon: AIIcon, label: 'AI Agent', path: '/ai-agent' });
     }
+    // 3. Home (always on)
+    items.push({ id: 'home', icon: HomeIcon, label: 'Home', path: '/home' });
+    // 4. Downloads (always on)
+    items.push({ id: 'downloads', icon: DownloadsIcon, label: 'Downloads', path: '/downloads' });
     // 5. Directory (toggle)
     if (showDirectory) {
       items.push({ id: 'directory', icon: DirectoryIcon, label: 'Directory', path: '/directory' });
     }
-    // 6. Chat (toggle)
+    // Field Intel (dev flag; dark by default) — kept out of the main bar per United's list
+    if (ENABLE_FIELD_INTEL) {
+      items.push({ id: 'field-intel', icon: FieldIntelIcon, label: 'Field Intel', path: '/field-intel', hasBadge: fieldIntelUnread > 0 });
+    }
+    // Chat (toggle) — kept out of United's requested layout but available if admin enables
     if (showChat && chatEnabledByAdmin) {
       items.push({ id: 'chat', icon: ChatIcon, label: 'Chat', path: '/chat', hasBadge: chatUnread > 0 });
     }
-    // 7. Profile (always last)
+    // 6. Profile (always last)
     items.push({ id: 'profile', icon: ProfileIcon, label: 'Profile', path: '/profile' });
 
     return items;
