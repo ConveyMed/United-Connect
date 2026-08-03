@@ -130,8 +130,8 @@ const BottomNav = () => {
     if (showAIShortcut) {
       items.push({ id: 'ai', icon: AIIcon, label: 'AI Agent', path: '/ai-agent' });
     }
-    // 3. Home (always on)
-    items.push({ id: 'home', icon: HomeIcon, label: 'Home', path: '/home' });
+    // 3. Feed (always on) — labeled "Feed" for United; icon unchanged
+    items.push({ id: 'home', icon: HomeIcon, label: 'Feed', path: '/home' });
     // 4. Downloads (always on)
     items.push({ id: 'downloads', icon: DownloadsIcon, label: 'Downloads', path: '/downloads' });
     // 5. Directory (toggle)
