@@ -83,6 +83,9 @@ export const NotificationBanner = ({ bellRef }) => {
   const hasNewPosts = grouped.newPosts?.length > 0;
   const hasNewComments = Object.keys(grouped.commentsByPost || {}).length > 0;
 
+  // Nothing new to announce — don't show an empty "You have" banner
+  if (!hasNewPosts && !hasNewComments) return null;
+
   // Build message
   const postCount = grouped.newPosts?.length || 0;
   const commentPostCount = Object.keys(grouped.commentsByPost || {}).length;
