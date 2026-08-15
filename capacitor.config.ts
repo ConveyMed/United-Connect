@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.unitedconnect.app',
-  appName: 'United Connect',
+  appName: 'U Connect',
   webDir: 'build',
   ios: {
     contentInset: 'never',
