@@ -1,17 +1,19 @@
 /**
- * App Store Screenshot Generator
+ * App Store / Play Store Screenshot Generator
  *
- * Takes screenshots at exact App Store dimensions for all required device sizes.
+ * Takes screenshots at exact store dimensions for all required device sizes.
  * Runs against a local dev server.
  *
  * Usage:
- *   node scripts/screenshots.js
+ *   node scripts/screenshots.js                    # all devices
+ *   DEVICES=Android node scripts/screenshots.js    # only devices matching "Android"
  *
  * Environment variables (or edit defaults below):
  *   PORT           - dev server port (default: 3001)
  *   ORG_CODE       - organization gate code
  *   TEST_EMAIL     - login email
  *   TEST_PASSWORD  - login password
+ *   DEVICES        - substring filter on device name (default: all)
  *
  * Screens captured:
  *   01-Login, 02-Home, 03-SalesTools, 04-AIChat, 05-Downloads, 06-ContentViewer
@@ -31,11 +33,15 @@ const OUTPUT_DIR = path.join(__dirname, '..', 'screenshots');
 // App Store required device sizes
 // iPhone 6.5" Display: 1242x2688 (iPhone 11 Pro Max / XS Max)
 // iPad 12.9" Display: 2048x2732 (iPad Pro 12.9")
+//
+// Play Store: phone required (9:16, each side 320-3840). 7" and 10" tablet
+// sets are required for tablet distribution.
 const DEVICES = [
   {
     name: 'iPhone-6.5',
     viewport: { width: 414, height: 896 },
     deviceScaleFactor: 3,
+    phone: true,
     // Output: 1242x2688
   },
   {
@@ -43,6 +49,25 @@ const DEVICES = [
     viewport: { width: 1024, height: 1366 },
     deviceScaleFactor: 2,
     // Output: 2048x2732
+  },
+  {
+    name: 'Android-Phone',
+    viewport: { width: 360, height: 640 },
+    deviceScaleFactor: 3,
+    phone: true,
+    // Output: 1080x1920
+  },
+  {
+    name: 'Android-Tablet-7',
+    viewport: { width: 600, height: 960 },
+    deviceScaleFactor: 2,
+    // Output: 1200x1920
+  },
+  {
+    name: 'Android-Tablet-10',
+    viewport: { width: 800, height: 1280 },
+    deviceScaleFactor: 2,
+    // Output: 1600x2560
   },
 ];
 
@@ -126,7 +151,7 @@ async function runForDevice(device) {
   const context = await browser.newContext({
     viewport: device.viewport,
     deviceScaleFactor: device.deviceScaleFactor,
-    isMobile: device.name.startsWith('iPhone'),
+    isMobile: !!device.phone,
     hasTouch: true,
   });
   const page = await context.newPage();
@@ -259,15 +284,20 @@ async function runForDevice(device) {
 }
 
 async function main() {
-  console.log('App Store Screenshot Generator');
-  console.log(`Target: ${BASE_URL}`);
-  console.log(`Output: ${OUTPUT_DIR}\n`);
+  const filter = process.env.DEVICES || '';
+  const devices = DEVICES.filter(d => d.name.includes(filter));
 
-  // Clean output dir
-  if (fs.existsSync(OUTPUT_DIR)) {
-    fs.rmSync(OUTPUT_DIR, { recursive: true });
-  }
+  console.log('Store Screenshot Generator');
+  console.log(`Target: ${BASE_URL}`);
+  console.log(`Output: ${OUTPUT_DIR}`);
+  console.log(`Devices: ${devices.map(d => d.name).join(', ') || '(none matched)'}\n`);
+
+  // Clean only the device dirs this run will rewrite
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  for (const device of devices) {
+    const dir = path.join(OUTPUT_DIR, device.name);
+    if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true });
+  }
 
   // Verify server is running
   try {
@@ -278,7 +308,7 @@ async function main() {
     process.exit(1);
   }
 
-  for (const device of DEVICES) {
+  for (const device of devices) {
     await runForDevice(device);
   }
 
