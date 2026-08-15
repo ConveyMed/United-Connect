@@ -1,4 +1,4 @@
-package com.clientname.app;
+package com.unitedconnect.app;
 
 import com.getcapacitor.BridgeActivity;
 
