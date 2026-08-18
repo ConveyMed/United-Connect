@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../config/supabase';
+import { BRAND } from '../config/brand';
 import './onboarding.css';
 
 function ForgotPassword() {
@@ -20,12 +21,15 @@ function ForgotPassword() {
     setError('');
 
     try {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`
+      const { data, error: resetError } = await supabase.functions.invoke('send-reset-email', {
+        body: { email, ...BRAND }
       });
 
       if (resetError) {
         throw resetError;
+      }
+      if (data && data.success === false) {
+        throw new Error(data.error || 'Failed to send reset email');
       }
 
       setIsSuccess(true);
