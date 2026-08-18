@@ -48,7 +48,7 @@ function SignUp() {
       // auto-confirmed, so no built-in signup email fires. Fire and forget:
       // a failed email must never break account creation.
       supabase.functions.invoke('send-welcome-email', {
-        body: { email: trimmedEmail, ...BRAND }
+        body: { email: email.trim().toLowerCase(), ...BRAND }
       }).catch((e) => console.error('Welcome email failed:', e));
 
       // If no session returned (user already exists or edge case), try signing in directly
