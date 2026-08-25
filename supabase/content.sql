@@ -12,7 +12,7 @@
 -- Categories table
 CREATE TABLE IF NOT EXISTS content_categories (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  type VARCHAR(20) NOT NULL CHECK (type IN ('library', 'training')),
+  type VARCHAR(20) NOT NULL CHECK (type IN ('library', 'training', 'forms')),
   title VARCHAR(255) NOT NULL,
   description TEXT,
   sort_order INTEGER DEFAULT 0,
