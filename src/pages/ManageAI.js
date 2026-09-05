@@ -203,7 +203,7 @@ const ManageAI = () => {
         <button style={styles.backButton} onClick={() => navigate(-1)}>
           <BackIcon />
         </button>
-        <h1 style={styles.headerTitle}>Gemini AI</h1>
+        <h1 style={styles.headerTitle}>U-AI Agent</h1>
         <div style={{ width: 40 }} />
       </header>
 
@@ -212,7 +212,7 @@ const ManageAI = () => {
         {/* Info Card */}
         <div style={styles.infoCard}>
           <p style={styles.infoText}>
-            Manage product documentation for the AI assistant. Upload markdown (.md) files to add new products or update existing ones.
+            Manage product documentation for the U-AI Agent. Upload markdown (.md) files to add new products or update existing ones.
           </p>
         </div>
 

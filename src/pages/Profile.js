@@ -270,7 +270,7 @@ const Profile = () => {
                 <button style={styles.menuItem} onClick={() => navigate('/manage-library')}>
                   <div style={styles.menuItemWithIcon}>
                     <LibraryIcon />
-                    <span style={styles.menuText}>Manage Sales Tools</span>
+                    <span style={styles.menuText}>Manage United Portfolio</span>
                   </div>
                   <ChevronRightIcon />
                 </button>
@@ -332,14 +332,14 @@ const Profile = () => {
                 <button style={styles.menuItem} onClick={() => navigate('/manage-ai')}>
                   <div style={styles.menuItemWithIcon}>
                     <AIIcon />
-                    <span style={styles.menuText}>Gemini AI</span>
+                    <span style={styles.menuText}>U-AI Agent</span>
                   </div>
                   <ChevronRightIcon />
                 </button>
                 <div style={styles.toggleItem}>
                   <div style={styles.menuItemWithIcon}>
                     <AIIcon />
-                    <span style={styles.menuText}>Gemini AI Shortcut</span>
+                    <span style={styles.menuText}>U-AI Agent Shortcut</span>
                   </div>
                   <button
                     style={{

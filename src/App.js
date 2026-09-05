@@ -18,7 +18,6 @@ import {
 } from './services/onesignal';
 import { supabase } from './config/supabase';
 import BottomNav from './components/BottomNav';
-import AnimatedSplash from './components/AnimatedSplash';
 import AIChatPanel from './components/AIChatPanel';
 import OfflineLoginScreen from './components/OfflineLoginScreen';
 import OfflineScreen from './components/OfflineScreen';
@@ -258,14 +257,6 @@ function AppContent() {
     localStorage.getItem('org_code_verified') === 'true'
   );
 
-  // Auth often resolves in a few ms, which would make the splash flash by
-  // unseen. Hold it up for a minimum stretch so the boot animation registers.
-  const [minSplashElapsed, setMinSplashElapsed] = useState(false);
-  useEffect(() => {
-    const timer = setTimeout(() => setMinSplashElapsed(true), 600);
-    return () => clearTimeout(timer);
-  }, []);
-
   // Check for signup confirmation in URL hash and redirect to email-confirmed page
   useEffect(() => {
     const hash = window.location.hash;
@@ -450,8 +441,10 @@ function AppContent() {
     );
   }
 
-  if (loading || !minSplashElapsed) {
-    return <AnimatedSplash />;
+  // Auth resolves in a few ms. Render nothing rather than flashing a boot screen;
+  // the native splash (white) covers this gap.
+  if (loading) {
+    return null;
   }
 
   // Show offline login screen when offline and not authenticated

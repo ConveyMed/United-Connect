@@ -76,8 +76,8 @@ const CheckIcon = () => (
   </svg>
 );
 
-// Set this to the company/app name - will display as "{APP_NAME} Product Expert"
-const APP_NAME = 'United Orthopedic';
+// Display name for the in-app AI assistant.
+const AI_NAME = 'U-AI Agent';
 
 const AIChatPanel = () => {
   const {
@@ -247,7 +247,7 @@ const AIChatPanel = () => {
               <AIBotIcon />
             </div>
             <div style={styles.headerInfo}>
-              <span style={styles.headerTitle}>{APP_NAME} Product Expert</span>
+              <span style={styles.headerTitle}>{AI_NAME}</span>
             </div>
           </div>
 

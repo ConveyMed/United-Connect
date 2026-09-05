@@ -2122,7 +2122,7 @@ const Home = () => {
       {/* Header - full width */}
       <header style={styles.header}>
         <div style={styles.headerInner}>
-          <h1 style={styles.headerTitle}>Company Feed</h1>
+          <h1 style={styles.headerTitle}>News & Events</h1>
           <div style={styles.bellWrapper}>
             <NotificationBell bellRef={bellRef} />
           </div>

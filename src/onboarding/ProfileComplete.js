@@ -5,7 +5,7 @@ import './onboarding.css';
 
 // United Connect membership types (required, single-select). "United Team" is the
 // corporate group that appears in the Directory; the other two are field roles.
-const MEMBER_TYPES = ['United Team', 'Independent Agents', 'Independent Reps'];
+const MEMBER_TYPES = ['United Team', 'Independent Agent', 'Independent Rep'];
 
 function ProfileComplete({ onComplete }) {
   const [user, setUser] = useState(null);
@@ -507,7 +507,7 @@ function ProfileComplete({ onComplete }) {
       {step === 'photo' && (
         <div className="profile-step">
           <h1 className="profile-title">Add a Photo</h1>
-          <p className="profile-subtitle">Help your team recognize you <span style={{color: 'var(--text-light)'}}>(optional)</span></p>
+          <p className="profile-subtitle">Help your team recognize you <span style={{color: 'var(--text-light)'}}>(optional)</span>.</p>
 
           <div className="profile-photo-container">
             {imagePreview ? (
@@ -545,7 +545,7 @@ function ProfileComplete({ onComplete }) {
       {step === 'bio' && (
         <div className="profile-step">
           <h1 className="profile-title">About You</h1>
-          <p className="profile-subtitle">Write a short bio for your profile <span style={{color: 'var(--text-light)'}}>(optional)</span></p>
+          <p className="profile-subtitle">Write a short bio for your profile <span style={{color: 'var(--text-light)'}}>(optional)</span>.</p>
 
           <textarea
             className="profile-textarea"
@@ -574,7 +574,7 @@ function ProfileComplete({ onComplete }) {
             </svg>
           </div>
           <h1 className="profile-title">Review Your Profile</h1>
-          <p className="profile-subtitle">Make sure everything looks good</p>
+          <p className="profile-subtitle">Make sure everything looks good.</p>
 
           <div className="profile-review-card">
             {imagePreview && (
