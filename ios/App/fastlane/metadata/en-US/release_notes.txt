@@ -1,1 +1,11 @@
-Initial release of United Connect.
+Updated naming throughout the app so every screen matches:
+
+- Sales Tools is now United Portfolio
+- The Feed is now News & Events
+- The AI assistant is now the U-AI Agent
+
+Also in this release:
+
+- Swapped the icons on the United Portfolio and News & Events tabs
+- Corrected the Independent Agent and Independent Rep role names
+- Faster launch, with the old startup animation removed
