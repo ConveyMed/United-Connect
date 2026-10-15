@@ -1,0 +1,9 @@
+allowBuilds:
+  canvas: false
+  core-js: false
+  core-js-pure: false
+# Switched from npm 10.15.2026. Hoisted keeps the flat npm layout that
+# Capacitor, create-react-app and older tooling expect, while still linking
+# from the shared pnpm store.
+nodeLinker: hoisted
+strictDepBuilds: false
