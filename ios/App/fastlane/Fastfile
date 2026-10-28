@@ -111,4 +111,20 @@ platform :ios do
     upload
     submit
   end
+
+  desc "Push metadata + screenshots to App Store Connect WITHOUT submitting for review"
+  lane :push_listing do
+    deliver(
+      api_key:                    asc_key,
+      skip_binary_upload:         true,
+      submit_for_review:          false,
+      force:                      true,
+      overwrite_screenshots:      true,
+      run_precheck_before_submit: false,
+      skip_metadata:              false,
+      skip_screenshots:           false,
+      metadata_path:              "fastlane/metadata",
+      screenshots_path:           "fastlane/screenshots"
+    )
+  end
 end

@@ -63,6 +63,14 @@ Submit current processed build for App Store review. Pass version: if auto-detec
 
 Full release: build -> upload -> wait for processing -> submit
 
+### ios push_listing
+
+```sh
+[bundle exec] fastlane ios push_listing
+```
+
+Push metadata + screenshots to App Store Connect WITHOUT submitting for review
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

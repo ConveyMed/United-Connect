@@ -123,15 +123,15 @@ const BottomNav = () => {
   const allItems = useMemo(() => {
     const items = [];
 
-    // United Ortho requested order: United Portfolio | U-AI Agent | News & Events | Downloads | Directory | Profile
-    // 1. United Portfolio (always on)
+    // United Ortho requested order: News & Events | United Portfolio | U-AI Agent | Downloads | Directory | Profile
+    // 1. News & Events (always on) — carries the book icon; traded with United Portfolio
+    items.push({ id: 'home', icon: SalesToolsIcon, label: 'News & Events', path: '/home' });
+    // 2. United Portfolio (always on)
     items.push({ id: 'resources', icon: HomeIcon, label: 'United Portfolio', path: '/resources' });
-    // 2. U-AI Agent (toggle)
+    // 3. U-AI Agent (toggle)
     if (showAIShortcut) {
       items.push({ id: 'ai', icon: AIIcon, label: 'U-AI Agent', path: '/ai-agent' });
     }
-    // 3. News & Events (always on) — carries the book icon; traded with United Portfolio
-    items.push({ id: 'home', icon: SalesToolsIcon, label: 'News & Events', path: '/home' });
     // 4. Downloads (always on)
     items.push({ id: 'downloads', icon: DownloadsIcon, label: 'Downloads', path: '/downloads' });
     // 5. Directory (toggle)
