@@ -1,1 +1,1 @@
-News & Events is now the first tab and the screen the app opens to.
+Fixes an issue that prevented the app from opening on iOS 27.

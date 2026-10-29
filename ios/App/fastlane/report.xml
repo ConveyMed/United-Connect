@@ -5,17 +5,22 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000197">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000245">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: app_store_connect_api_key" time="0.003484">
+      <testcase classname="fastlane.lanes" name="1: grep -m1 MARKETING_VERSION ../App.xcodeproj/project.pbxproj" time="0.007786">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: latest_testflight_build_number" time="0.695255">
+      <testcase classname="fastlane.lanes" name="2: app_store_connect_api_key" time="0.003426">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: deliver" time="33.092179">
         
       </testcase>
     
