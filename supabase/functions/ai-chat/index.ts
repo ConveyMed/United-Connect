@@ -9,7 +9,8 @@ const corsHeaders = {
 // Fallback used when app_settings.ai_chat_config row is missing or unreadable.
 // To change the prompt for a deployed app, UPDATE the ai_chat_config row in app_settings — do NOT edit this constant.
 const DEFAULT_AI_CONFIG = {
-  model: "gemini-2.5-flash",
+  // Model is a server setting (GEMINI_MODEL secret) so every app can switch without new code.
+  model: Deno.env.get("GEMINI_MODEL") ?? "gemini-3.6-flash",
   temperature: 0.3,
   max_tokens: 4096,
   prompt_template: `You are a medical device product expert assistant. Answer questions about products using ONLY the provided documentation. Be accurate and cite specific information.
@@ -89,6 +90,9 @@ async function getAiConfig(supabase: ReturnType<typeof createClient>) {
     return DEFAULT_AI_CONFIG;
   }
   const merged = { ...DEFAULT_AI_CONFIG, ...data.value };
+  // The GEMINI_MODEL server setting always wins over the model saved in app_settings.
+  const envModel = Deno.env.get("GEMINI_MODEL");
+  if (envModel) merged.model = envModel;
   configCache = { config: merged, cachedAt: Date.now() };
   return merged;
 }
